@@ -35,6 +35,9 @@
 
   tokens = [
         ID="regexp:[A-Za-z0-9_]+"
+        URL="regexp:[A-Za-z0-9_\\?&/]+"
+        SWAGBOOL="regexp:(true|false)"
+        SWAG_SPACE="regexp:[\s\r]+"
         AT = '@'
         SHARP = '#'
         EQ = '='
@@ -74,6 +77,20 @@
         TAG_NAME_GENERIC = 'generic'
         TAG_NAME_ALIAS = 'alias'
         TAG_NAME_SUPPRESS = 'suppress'
+        TAG_NAME_SWAGTAGS = 'Tags'
+        TAG_NAME_SWAGSUMMARY = 'Summary'
+        TAG_NAME_SWAGPARAM = 'Param'
+        TAG_NAME_SWAGROUTER = 'Router'
+        TAG_NAME_SWAGDES = 'Description'
+        SWAGPARAM_QUERY = "query"
+        SWAGPARAM_HEADER = "header"
+        SWAGPARAM_FORM = "formData"
+        SWAGPARAM_PATH = "path"
+        SWAGPARAM_BODY = "body"
+        SWAGPARAM_TRUE = 'true'
+        SWAGPARAM_FALSE = 'false'
+        HTTP_METHOD_GET = '[GET]'
+        HTTP_METHOD_SWAG  = "regexp:\s*\[(GET)\[+"
   ]
   implements("tag.*") = [
     "com.tang.intellij.lua.comment.psi.LuaDocTag"
@@ -97,7 +114,12 @@ private doc_item ::= '@' (tag_param
     | tag_see
     | tag_def
     | access_modifier
-    | tag_generic_list)
+    | tag_generic_list
+    | tag_swag_tags
+    | tag_swag_summary
+    | tag_swag_params
+    | tag_swag_router
+    | tag_swag_des)
 
 ty ::= union_ty | function_ty | table_ty | generic_ty | arr_ty | general_ty | par_ty | string_literal_ty {
     implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
@@ -176,6 +198,27 @@ union_ty ::= ty ('|' ty)+ {
 }
 access_modifier ::= PRIVATE | PUBLIC | PROTECTED | TAG_NAME_PRIVATE | TAG_NAME_PUBLIC | TAG_NAME_PROTECTED
 
+
+tag_swag_router ::= TAG_NAME_SWAGROUTER URL http_method
+tag_swag_httpmethod ::= '[' ID ']' {
+    pin = 1
+}
+
+tag_swag_params ::= TAG_NAME_SWAGPARAM swag_param_name tag_swag_query_type ("{")? ty ("}")? comment_string  {
+    pin = 1
+}
+
+tag_swag_space ::= SWAG_SPACE
+
+swag_param_name ::= ID
+
+tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER
+
+
+tag_swag_param_type ::=  'query' | 'header' {
+    pin = 1
+}
+
 tag_field ::= TAG_NAME_FIELD access_modifier? ('<' class_name_ref '>')? ID ty comment_string? {
     pin = 1
     implements = [
@@ -222,6 +265,7 @@ tag_lan ::= TAG_NAME_LANGUAGE lan_id comment_string? {
 param_name_ref ::= ID {
     methods = [getReference]
 }
+
 tag_param ::= TAG_NAME_PARAM param_name_ref ty comment_string? {
     pin = 1
     methods = [getType]
@@ -238,6 +282,21 @@ tag_return ::= TAG_NAME_RETURN type_list comment_string? {
     methods = [resolveTypeAt getType]
 }
 
+// swagger
+tag_swag_tags ::= TAG_NAME_SWAGTAGS comment_string {
+    pin = 1
+}
+
+tag_swag_summary ::= TAG_NAME_SWAGSUMMARY comment_string {
+    pin = 1
+}
+
+http_method ::= HTTP_METHOD_SWAG
+
+tag_swag_des ::= TAG_NAME_SWAGDES comment_string {
+    pin = 1
+}
+
 class_name_ref ::= ID {
     methods = [getReference resolveType]
 }
@@ -251,7 +310,7 @@ tag_class ::= (TAG_NAME_CLASS|TAG_NAME_MODULE) ID (EXTENDS class_name_ref)? comm
     stubClass = "com.tang.intellij.lua.stubs.LuaDocTagClassStub"
     methods = [
         getType
-        
+
         getPresentation
         getNameIdentifier
         setName

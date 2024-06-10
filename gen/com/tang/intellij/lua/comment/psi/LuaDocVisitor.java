@@ -46,6 +46,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTy(o);
   }
 
+  public void visitHttpMethod(@NotNull LuaDocHttpMethod o) {
+    visitPsiElement(o);
+  }
+
   public void visitLanId(@NotNull LuaDocLanId o) {
     visitPsiElement(o);
   }
@@ -60,6 +64,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
 
   public void visitStringLiteralTy(@NotNull LuaDocStringLiteralTy o) {
     visitTy(o);
+  }
+
+  public void visitSwagParamName(@NotNull LuaDocSwagParamName o) {
+    visitPsiElement(o);
   }
 
   public void visitTableField(@NotNull LuaDocTableField o) {
@@ -124,6 +132,42 @@ public class LuaDocVisitor extends PsiElementVisitor {
   }
 
   public void visitTagSuppress(@NotNull LuaDocTagSuppress o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagDes(@NotNull LuaDocTagSwagDes o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagHttpmethod(@NotNull LuaDocTagSwagHttpmethod o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagParamType(@NotNull LuaDocTagSwagParamType o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagParams(@NotNull LuaDocTagSwagParams o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagQueryType(@NotNull LuaDocTagSwagQueryType o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagRouter(@NotNull LuaDocTagSwagRouter o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSpace(@NotNull LuaDocTagSwagSpace o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSummary(@NotNull LuaDocTagSwagSummary o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagTags(@NotNull LuaDocTagSwagTags o) {
     visitTag(o);
   }
 

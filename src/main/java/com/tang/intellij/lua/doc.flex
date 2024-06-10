@@ -57,6 +57,8 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 STRING=[^\r\n\t\f]*
 ID=[:jletter:] ([:jletterdigit:]|\.)*
+URL=[A-Za-z0-9_\?&/]+
+HTTP_METHOD=\[[A-Z]+\]+
 AT=@
 //三个-以上
 DOC_DASHES = --+
@@ -79,6 +81,15 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 %state xSUPPRESS
 %state xDOUBLE_QUOTED_STRING
 %state xSINGLE_QUOTED_STRING
+%state xSWAG_TAGS
+%state xSWAG_PARAMS
+%state xSWAG_SUMMARY
+%state xSWAG_QUERY_TYPE
+%state xSWAG_QUERY_TY
+%state xSWAG_QUERY_OPTIONAL
+%state xSWAG_ROUTER
+%state xSWAG_DES
+%state xSWAG_METHOD
 
 %%
 
@@ -90,7 +101,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     .                          { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
-<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS> {
+<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES> {
     {EOL}                      { yybegin(YYINITIAL);return com.intellij.psi.TokenType.WHITE_SPACE;}
     {LINE_WS}+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
@@ -112,6 +123,11 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     "see"                      { yybegin(xTAG); return TAG_NAME_SEE; }
     "alias"                    { yybegin(xALIAS); return TAG_NAME_ALIAS; }
     "suppress"                 { yybegin(xSUPPRESS); return TAG_NAME_SUPPRESS; }
+    "Param"                    { yybegin(xSWAG_PARAMS); return TAG_NAME_SWAGPARAM; }
+    "Tags"                     { yybegin(xSWAG_TAGS); return TAG_NAME_SWAGTAGS; }
+    "Summary"                  { yybegin(xSWAG_SUMMARY); return TAG_NAME_SWAGSUMMARY; }
+    "Router"                   { yybegin(xSWAG_ROUTER); return TAG_NAME_SWAGROUTER; }
+    "Description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
     {ID}                       { yybegin(xCOMMENT_STRING); return TAG_NAME; }
     [^]                        { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -140,6 +156,51 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 <xCLASS_EXTEND> {
     ":"                        { beginType(); return EXTENDS;}
     [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
+}
+
+<xSWAG_TAGS> {
+    [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
+}
+
+<xSWAG_SUMMARY> {
+   [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
+}
+
+<xSWAG_DES> {
+    [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
+}
+
+<xSWAG_ROUTER> {
+    {URL}                     { yybegin(xSWAG_METHOD); return  URL; }
+}
+
+<xSWAG_METHOD> {
+    {WHITE_SPACE}                   { yybegin(xSWAG_METHOD); return com.intellij.psi.TokenType.WHITE_SPACE;}
+    {HTTP_METHOD}                   {return  HTTP_METHOD_SWAG; }
+}
+
+<xSWAG_PARAMS> {
+     {ID}                        { yybegin(xSWAG_QUERY_TYPE); return ID; }
+}
+
+<xSWAG_QUERY_TYPE> {
+     {WHITE_SPACE}                  { yybegin(xSWAG_QUERY_TYPE); return com.intellij.psi.TokenType.WHITE_SPACE;}
+     "query"                        { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_QUERY; }
+     "header"                       { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_HEADER; }
+     "body"                         { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_BODY; }
+     "formData"                     { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_FORM; }
+     "path"                         { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_PATH; }
+}
+
+<xSWAG_QUERY_TY> {
+     {WHITE_SPACE}               { yybegin(xSWAG_QUERY_TY); return com.intellij.psi.TokenType.WHITE_SPACE;}
+     "{"                         { yybegin(xSWAG_QUERY_TY); return LCURLY;}
+     {ID}                        { beginType(); return ID; }
+}
+
+<xSWAG_QUERY_OPTIONAL> {
+     "true"                        { yybegin(xCOMMENT_STRING); return SWAGPARAM_TRUE; }
+     "false"                       { yybegin(xCOMMENT_STRING); return SWAGPARAM_FALSE; }
 }
 
 <xPARAM> {
