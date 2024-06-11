@@ -592,10 +592,9 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (TAG_NAME_CLASS|TAG_NAME_MODULE) ID (EXTENDS class_name_ref)? comment_string?
+  // (TAG_NAME_CLASS|TAG_NAME_MODULE|TAG_NAME_ENUM) ID (EXTENDS class_name_ref)? comment_string?
   public static boolean tag_class(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_class")) return false;
-    if (!nextTokenIs(b, "<tag class>", TAG_NAME_CLASS, TAG_NAME_MODULE)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, TAG_CLASS, "<tag class>");
     r = tag_class_0(b, l + 1);
@@ -607,12 +606,13 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // TAG_NAME_CLASS|TAG_NAME_MODULE
+  // TAG_NAME_CLASS|TAG_NAME_MODULE|TAG_NAME_ENUM
   private static boolean tag_class_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_class_0")) return false;
     boolean r;
     r = consumeToken(b, TAG_NAME_CLASS);
     if (!r) r = consumeToken(b, TAG_NAME_MODULE);
+    if (!r) r = consumeToken(b, TAG_NAME_ENUM);
     return r;
   }
 

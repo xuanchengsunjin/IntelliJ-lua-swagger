@@ -26,6 +26,11 @@
 ---@class boolean
 
 ---
+--- The type *bool* has two values, **false** and **true**. Both **nil** and
+--- **false** make a condition false; any other value makes it true.
+---@class bool
+
+---
 --- The type *number* uses two internal representations, or two subtypes, one
 --- called *integer* and the other called *float*. Lua has explicit rules about
 --- when each representation is used, but it also converts between them

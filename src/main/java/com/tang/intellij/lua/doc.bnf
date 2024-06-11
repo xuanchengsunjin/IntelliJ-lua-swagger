@@ -68,6 +68,7 @@
         TAG_NAME_PROTECTED = 'protected'
         TAG_NAME_PUBLIC = 'public'
         TAG_NAME_CLASS = 'class'
+        TAG_NAME_ENUM = 'enum'
         TAG_NAME_FIELD = 'field'
         TAG_NAME_TYPE = 'type'
         TAG_NAME_LANGUAGE = 'language'
@@ -307,7 +308,7 @@ tag_swag_des ::= TAG_NAME_SWAGDES comment_string {
 class_name_ref ::= ID {
     methods = [getReference resolveType]
 }
-tag_class ::= (TAG_NAME_CLASS|TAG_NAME_MODULE) ID (EXTENDS class_name_ref)? comment_string? {
+tag_class ::= (TAG_NAME_CLASS|TAG_NAME_MODULE|TAG_NAME_ENUM) ID (EXTENDS class_name_ref)? comment_string? {
     pin = 2
     implements = [
         "com.tang.intellij.lua.comment.psi.LuaDocPsiElement"
