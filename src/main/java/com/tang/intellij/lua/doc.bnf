@@ -82,6 +82,7 @@
         TAG_NAME_SWAGPARAM = 'Param'
         TAG_NAME_SWAGROUTER = 'Router'
         TAG_NAME_SWAGDES = 'Description'
+        TAG_NAME_SIGN = 'Security'
         SWAGPARAM_QUERY = "query"
         SWAGPARAM_HEADER = "header"
         SWAGPARAM_FORM = "formData"
@@ -119,7 +120,8 @@ private doc_item ::= '@' (tag_param
     | tag_swag_summary
     | tag_swag_params
     | tag_swag_router
-    | tag_swag_des)
+    | tag_swag_des
+    | tag_swag_sign)
 
 ty ::= union_ty | function_ty | table_ty | generic_ty | arr_ty | general_ty | par_ty | string_literal_ty {
     implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
@@ -208,9 +210,14 @@ tag_swag_params ::= TAG_NAME_SWAGPARAM swag_param_name tag_swag_query_type ("{")
     pin = 1
 }
 
+tag_swag_sign ::= TAG_NAME_SIGN swag_sign {
+   pin = 1
+}
+
 tag_swag_space ::= SWAG_SPACE
 
 swag_param_name ::= ID
+swag_sign ::= ID
 
 tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER
 

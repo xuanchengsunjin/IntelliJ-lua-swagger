@@ -89,6 +89,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 %state xSWAG_QUERY_OPTIONAL
 %state xSWAG_ROUTER
 %state xSWAG_DES
+%state xSWAG_SIGN
 %state xSWAG_METHOD
 
 %%
@@ -101,7 +102,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     .                          { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
-<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES> {
+<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN> {
     {EOL}                      { yybegin(YYINITIAL);return com.intellij.psi.TokenType.WHITE_SPACE;}
     {LINE_WS}+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
@@ -128,6 +129,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     "Summary"                  { yybegin(xSWAG_SUMMARY); return TAG_NAME_SWAGSUMMARY; }
     "Router"                   { yybegin(xSWAG_ROUTER); return TAG_NAME_SWAGROUTER; }
     "Description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
+    "Security"                 { yybegin(xSWAG_SIGN); return TAG_NAME_SIGN; }
     {ID}                       { yybegin(xCOMMENT_STRING); return TAG_NAME; }
     [^]                        { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -168,6 +170,10 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 
 <xSWAG_DES> {
     [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
+}
+
+<xSWAG_SIGN> {
+    {ID}                     { yybegin(YYINITIAL); return ID; }
 }
 
 <xSWAG_ROUTER> {

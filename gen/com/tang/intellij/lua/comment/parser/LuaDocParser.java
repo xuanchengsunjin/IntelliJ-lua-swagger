@@ -167,7 +167,8 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_summary
   //     | tag_swag_params
   //     | tag_swag_router
-  //     | tag_swag_des)
+  //     | tag_swag_des
+  //     | tag_swag_sign)
   static boolean doc_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -198,6 +199,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_params
   //     | tag_swag_router
   //     | tag_swag_des
+  //     | tag_swag_sign
   private static boolean doc_item_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item_1")) return false;
     boolean r;
@@ -220,6 +222,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = tag_swag_params(b, l + 1);
     if (!r) r = tag_swag_router(b, l + 1);
     if (!r) r = tag_swag_des(b, l + 1);
+    if (!r) r = tag_swag_sign(b, l + 1);
     return r;
   }
 
@@ -518,6 +521,18 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, ID);
     exit_section_(b, m, SWAG_PARAM_NAME, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ID
+  public static boolean swag_sign(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "swag_sign")) return false;
+    if (!nextTokenIs(b, ID)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ID);
+    exit_section_(b, m, SWAG_SIGN, r);
     return r;
   }
 
@@ -983,6 +998,20 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     r = r && http_method(b, l + 1);
     exit_section_(b, m, TAG_SWAG_ROUTER, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_SIGN swag_sign
+  public static boolean tag_swag_sign(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_sign")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SIGN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_SIGN, null);
+    r = consumeToken(b, TAG_NAME_SIGN);
+    p = r; // pin = 1
+    r = r && swag_sign(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

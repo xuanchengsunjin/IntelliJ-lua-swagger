@@ -24,6 +24,7 @@ public interface LuaDocTypes {
   IElementType PAR_TY = LuaParserDefinitionKt.createDocType("PAR_TY");
   IElementType STRING_LITERAL_TY = LuaParserDefinitionKt.createDocType("STRING_LITERAL_TY");
   IElementType SWAG_PARAM_NAME = LuaParserDefinitionKt.createDocType("SWAG_PARAM_NAME");
+  IElementType SWAG_SIGN = LuaParserDefinitionKt.createDocType("SWAG_SIGN");
   IElementType TABLE_DEF = LuaParserDefinitionKt.createDocType("TABLE_DEF");
   IElementType TABLE_FIELD = LuaParserDefinitionKt.createDocType("TABLE_FIELD");
   IElementType TABLE_TY = LuaParserDefinitionKt.createDocType("TABLE_TY");
@@ -44,6 +45,7 @@ public interface LuaDocTypes {
   IElementType TAG_SWAG_PARAM_TYPE = LuaParserDefinitionKt.createDocType("TAG_SWAG_PARAM_TYPE");
   IElementType TAG_SWAG_QUERY_TYPE = LuaParserDefinitionKt.createDocType("TAG_SWAG_QUERY_TYPE");
   IElementType TAG_SWAG_ROUTER = LuaParserDefinitionKt.createDocType("TAG_SWAG_ROUTER");
+  IElementType TAG_SWAG_SIGN = LuaParserDefinitionKt.createDocType("TAG_SWAG_SIGN");
   IElementType TAG_SWAG_SPACE = LuaParserDefinitionKt.createDocType("TAG_SWAG_SPACE");
   IElementType TAG_SWAG_SUMMARY = LuaParserDefinitionKt.createDocType("TAG_SWAG_SUMMARY");
   IElementType TAG_SWAG_TAGS = LuaParserDefinitionKt.createDocType("TAG_SWAG_TAGS");
@@ -102,6 +104,7 @@ public interface LuaDocTypes {
   IElementType TAG_NAME_PUBLIC = new LuaDocTokenType("public");
   IElementType TAG_NAME_RETURN = new LuaDocTokenType("return");
   IElementType TAG_NAME_SEE = new LuaDocTokenType("see");
+  IElementType TAG_NAME_SIGN = new LuaDocTokenType("Security");
   IElementType TAG_NAME_SUPPRESS = new LuaDocTokenType("suppress");
   IElementType TAG_NAME_SWAGDES = new LuaDocTokenType("Description");
   IElementType TAG_NAME_SWAGPARAM = new LuaDocTokenType("Param");
@@ -160,6 +163,9 @@ public interface LuaDocTypes {
       }
       else if (type == SWAG_PARAM_NAME) {
         return new LuaDocSwagParamNameImpl(node);
+      }
+      else if (type == SWAG_SIGN) {
+        return new LuaDocSwagSignImpl(node);
       }
       else if (type == TABLE_DEF) {
         return new LuaDocTableDefImpl(node);
@@ -220,6 +226,9 @@ public interface LuaDocTypes {
       }
       else if (type == TAG_SWAG_ROUTER) {
         return new LuaDocTagSwagRouterImpl(node);
+      }
+      else if (type == TAG_SWAG_SIGN) {
+        return new LuaDocTagSwagSignImpl(node);
       }
       else if (type == TAG_SWAG_SPACE) {
         return new LuaDocTagSwagSpaceImpl(node);

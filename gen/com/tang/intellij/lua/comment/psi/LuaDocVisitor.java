@@ -70,6 +70,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSwagSign(@NotNull LuaDocSwagSign o) {
+    visitPsiElement(o);
+  }
+
   public void visitTableField(@NotNull LuaDocTableField o) {
     visitPsiElement(o);
     // visitLuaClassField(o);
@@ -156,6 +160,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
   }
 
   public void visitTagSwagRouter(@NotNull LuaDocTagSwagRouter o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSign(@NotNull LuaDocTagSwagSign o) {
     visitTag(o);
   }
 
