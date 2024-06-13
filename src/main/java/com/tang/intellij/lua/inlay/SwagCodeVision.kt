@@ -66,18 +66,27 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
             val routerPresentation = factory.smallText("生成route代码")
             val genSwaggerPresentation = factory.smallText("|生成swagger文档")
             val yapiPresentation = factory.smallText("|同步到yapi")
-            val routPresentation = factory.onClick(routerPresentation, MouseButton.Left ){ _, _ ->
+            val routerPresentationRet = factory.onClick(routerPresentation, MouseButton.Left ){ _, _ ->
                 var cmd = genCmd(element.project, element, "router")
                 if (cmd != null) {
-//                    println(cmd)
                     executeCommandAndShowOutput(element.project, cmd, "生成Route代码")
-//                    executeShellCommand(cmd, element.project)
                 }
             }
-            sink.addInlineElement(element.textOffset, false, routPresentation, true)
-//            sink.addInlineElement(element.textOffset, false, genSwaggerPresentation, true)
-//            sink.addInlineElement(element.textOffset, false, yapiPresentation, true)
-//            sink.addBlockElement(element.startOffset, false, true, -1, presentation)
+            val genSwaggerPresentationRet = factory.onClick(genSwaggerPresentation, MouseButton.Left ){ _, _ ->
+                var cmd = genCmd(element.project, element, "genSwag")
+                if (cmd != null) {
+                    executeCommandAndShowOutput(element.project, cmd, "生成swagger文档")
+                }
+            }
+            val yapiPresentationRet = factory.onClick(yapiPresentation, MouseButton.Left ){ _, _ ->
+                var cmd = genCmd(element.project, element, "yapiImport")
+                if (cmd != null) {
+                    executeCommandAndShowOutput(element.project, cmd, "同步到yapi")
+                }
+            }
+            sink.addInlineElement(element.textOffset, false, routerPresentationRet, true)
+            sink.addInlineElement(element.textOffset, false, genSwaggerPresentationRet, true)
+            sink.addInlineElement(element.textOffset, false, yapiPresentationRet, true)
 
             return true
         }
@@ -90,6 +99,12 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
             var routerPath = "/internal/purchase/notify_inherit_paylog"
             if (kind == "router") {
                 val cmd = "cd ${project.basePath} && luatools swag-gen --SearchDir=\"${swagConfig.get("swagger.search_dirs")}\" --MainAPIFile=\"${swagConfig.get("swagger.main.lua.path")}\" --genMode=\"*\" --GenRoutePatterns=\"${routerPath}\" --dtoDir=\"${swagConfig.get("dto_dir")}\" --validatorDir=\"${swagConfig.get("validator_dir")}\""
+                return cmd
+            }else if (kind == "genSwag") {
+                var cmd = "cd ${project.basePath} && luatools swag-resty --SearchDir=\"${swagConfig.get("swagger.search_dirs")}\" --MainAPIFile=\"${swagConfig.get("swagger.main.lua.path")}\" --OutputDir=\"${swagConfig.get("swagger.docs.path")}\" --OutputType=\"${swagConfig.get("swagger.file.type")}\" --outputName=\"${swagConfig.get("swagger.name")}\" --excludes=\"${swagConfig.get("swagger.excludes")}\" --apiTool=\"swagger,yapi\""
+                return cmd
+            }else if (kind == "yapiImport") {
+                var cmd = "cd ${project.basePath} && luatools yapi-import --yapiFile=\"${swagConfig.get("yapi.config.file")}\" --yapiToken=\"${swagConfig.get("yapi.config.file")}\" --yapiServer=\"${swagConfig.get("yapi.config.server")}\" --yapiMode=\"${swagConfig.get("yapi.config.mode")}\" --RoutePatterns=\"${routerPath}\""
                 return cmd
             }
             return null
