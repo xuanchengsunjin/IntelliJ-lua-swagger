@@ -41,8 +41,8 @@ class SwagStartAc : ProjectActivity {
     "validator_dir": "./ngx_conf/validator",
     "yapi.config.file": "docs/swagger-yapi.json",
     "yapi.config.mode": "mergin",
-    "yapi.config.server": "https://web-api.intsig.net",
-    "yapi.config.token": "19005757da6de5b9f374996358fd186646e1fa3a82fce3a4ba41a6ea5785b8c4"
+    "yapi.config.server": "https://api.yapi.net",
+    "yapi.config.token": "xxxxxxxxx"
 }
             """
             Files.createDirectories(ideaPath)
