@@ -37,6 +37,7 @@ public class LuaIcons {
     public static final Icon CSHARP = getIcon("/icons/csharp.png");
     public static final Icon CPP = getIcon("/icons/cpp.png");
     public static final Icon CLASS = AllIcons.Nodes.Class;
+    public static final Icon API = getIcon("/icons/swagger.svg");
     public static final Icon Alias = AllIcons.Nodes.AbstractClass;
     public static final Icon CLASS_FIELD = AllIcons.Nodes.Field;
     public static final Icon CLASS_METHOD = AllIcons.Nodes.Method;
