@@ -79,6 +79,10 @@
         <completion.contributor language="Lua" implementationClass="com.tang.intellij.lua.editor.completion.LuaDocCompletionContributor"/>
         <completion.contributor language="Lua" implementationClass="com.tang.intellij.lua.editor.completion.LuaCompletionContributor"/>
 
+        <postStartupActivity implementation="com.tang.intellij.lua.inlay.SwagStartAc"/>
+
+        <codeInsight.inlayProvider language="Lua" implementationClass="com.tang.intellij.lua.inlay.SwagCodeVision"/>
+        <toolWindow id="Shell Command Output" anchor="bottom" factoryClass="com.tang.intellij.lua.inlay.ShellCommandToolWindowFactory" />
         <!--codeInsight-->
         <codeInsight.lineMarkerProvider language="Lua" implementationClass="com.tang.intellij.lua.codeInsight.LuaLineMarkerProvider"/>
         <codeInsight.parameterNameHints language="Lua" implementationClass="com.tang.intellij.lua.codeInsight.LuaParameterHintsProvider"/>
@@ -101,7 +105,6 @@
         <typedHandler implementation="com.tang.intellij.lua.editor.LuaAutoIndentHandler"/>
         <fileTypeDetector implementation="com.tang.intellij.lua.lang.LuaFileTypeDetector"/>
         <customPasteProvider implementation="com.tang.intellij.lua.codeInsight.editorActions.StringLiteralPasteProvider"/>
-
         <!--highlighting-->
         <annotator language="Lua" implementationClass="com.tang.intellij.lua.annotator.LuaAnnotator" />
         <annotator language="Lua" implementationClass="com.tang.intellij.lua.annotator.LargerFileAnnotator"/>

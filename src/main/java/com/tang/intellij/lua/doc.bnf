@@ -35,7 +35,7 @@
 
   tokens = [
         ID="regexp:[A-Za-z0-9_]+"
-        URL="regexp:[A-Za-z0-9_\\?&/]+"
+        URL="regexp:[A-Za-z0-9_\\?&/=]+"
         SWAGBOOL="regexp:(true|false)"
         SWAG_SPACE="regexp:[\s\r]+"
         AT = '@'

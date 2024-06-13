@@ -57,7 +57,7 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 STRING=[^\r\n\t\f]*
 ID=[:jletter:] ([:jletterdigit:]|\.)*
-URL=[A-Za-z0-9_\?&/]+
+URL=[A-Za-z0-9_\?&/=]+
 HTTP_METHOD=\[[A-Z]+\]+
 AT=@
 //三个-以上
