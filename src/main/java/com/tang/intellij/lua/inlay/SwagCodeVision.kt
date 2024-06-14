@@ -64,7 +64,7 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
                 return  true
             }
 
-            val routerPresentation = factory.smallText("生成route代码")
+            val routerPresentation = factory.smallText("单击生成route代码")
             val genSwaggerPresentation = factory.smallText("|生成swagger文档")
             val yapiPresentation = factory.smallText("|同步到yapi")
             val routerPresentationRet = factory.onClick(routerPresentation, MouseButton.Left ){ _, _ ->
@@ -96,7 +96,11 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
             if (swagConfig == null){
                 return null
             }
-            var routerPath = "/internal/purchase/notify_inherit_paylog"
+            var routerPath = "xxxxxxxxxx"
+            if (element is LuaDocTagSwagRouterImpl) {
+                routerPath = element.url.text
+            }
+
             if (kind == "router") {
                 val cmd = "cd ${project.basePath} && luatools swag-gen --SearchDir=\"${swagConfig.get("swagger.search_dirs")}\" --MainAPIFile=\"${swagConfig.get("swagger.main.lua.path")}\" --genMode=\"*\" --GenRoutePatterns=\"${routerPath}\" --dtoDir=\"${swagConfig.get("dto_dir")}\" --validatorDir=\"${swagConfig.get("validator_dir")}\""
                 return cmd
