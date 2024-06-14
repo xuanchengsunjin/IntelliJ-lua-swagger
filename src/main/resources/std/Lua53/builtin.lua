@@ -28,7 +28,7 @@
 ---
 --- The type *bool* has two values, **false** and **true**. Both **nil** and
 --- **false** make a condition false; any other value makes it true.
----@class bool
+---@class bool: boolean
 
 ---
 --- The type *number* uses two internal representations, or two subtypes, one
@@ -43,6 +43,10 @@
 --- particularly attractive for small machines and embedded systems. (See
 --- macro LUA_32BITS in file luaconf.h.)
 ---@class number
+
+---
+--- type integer
+---@class integer
 
 ---
 --- Lua can call (and manipulate) functions written in Lua and functions
