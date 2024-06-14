@@ -33,6 +33,7 @@ public interface LuaDocTypes {
   IElementType TAG_DEF = LuaParserDefinitionKt.createDocType("TAG_DEF");
   IElementType TAG_FIELD = LuaParserDefinitionKt.createDocType("TAG_FIELD");
   IElementType TAG_GENERIC_LIST = LuaParserDefinitionKt.createDocType("TAG_GENERIC_LIST");
+  IElementType TAG_HTTP_STATUS = LuaParserDefinitionKt.createDocType("TAG_HTTP_STATUS");
   IElementType TAG_LAN = LuaParserDefinitionKt.createDocType("TAG_LAN");
   IElementType TAG_OVERLOAD = LuaParserDefinitionKt.createDocType("TAG_OVERLOAD");
   IElementType TAG_PARAM = LuaParserDefinitionKt.createDocType("TAG_PARAM");
@@ -41,9 +42,14 @@ public interface LuaDocTypes {
   IElementType TAG_SUPPRESS = LuaParserDefinitionKt.createDocType("TAG_SUPPRESS");
   IElementType TAG_SWAG_DES = LuaParserDefinitionKt.createDocType("TAG_SWAG_DES");
   IElementType TAG_SWAG_HTTPMETHOD = LuaParserDefinitionKt.createDocType("TAG_SWAG_HTTPMETHOD");
+  IElementType TAG_SWAG_LINE = LuaParserDefinitionKt.createDocType("TAG_SWAG_LINE");
+  IElementType TAG_SWAG_NOTE = LuaParserDefinitionKt.createDocType("TAG_SWAG_NOTE");
+  IElementType TAG_SWAG_OBJ = LuaParserDefinitionKt.createDocType("TAG_SWAG_OBJ");
   IElementType TAG_SWAG_PARAMS = LuaParserDefinitionKt.createDocType("TAG_SWAG_PARAMS");
   IElementType TAG_SWAG_PARAM_TYPE = LuaParserDefinitionKt.createDocType("TAG_SWAG_PARAM_TYPE");
   IElementType TAG_SWAG_QUERY_TYPE = LuaParserDefinitionKt.createDocType("TAG_SWAG_QUERY_TYPE");
+  IElementType TAG_SWAG_RESPONSE = LuaParserDefinitionKt.createDocType("TAG_SWAG_RESPONSE");
+  IElementType TAG_SWAG_RES_KEY = LuaParserDefinitionKt.createDocType("TAG_SWAG_RES_KEY");
   IElementType TAG_SWAG_ROUTER = LuaParserDefinitionKt.createDocType("TAG_SWAG_ROUTER");
   IElementType TAG_SWAG_SIGN = LuaParserDefinitionKt.createDocType("TAG_SWAG_SIGN");
   IElementType TAG_SWAG_SPACE = LuaParserDefinitionKt.createDocType("TAG_SWAG_SPACE");
@@ -88,6 +94,10 @@ public interface LuaDocTypes {
   IElementType SWAGPARAM_PATH = new LuaDocTokenType("path");
   IElementType SWAGPARAM_QUERY = new LuaDocTokenType("query");
   IElementType SWAGPARAM_TRUE = new LuaDocTokenType("true");
+  IElementType SWAGRES_TYPE_OBJ = new LuaDocTokenType("object");
+  IElementType SWAG_HTTPSTATUS = new LuaDocTokenType("SWAG_HTTPSTATUS");
+  IElementType SWAG_NOTE = new LuaDocTokenType("SWAG_NOTE");
+  IElementType SWAG_RES_KEY = new LuaDocTokenType("SWAG_RES_KEY");
   IElementType SWAG_SPACE = new LuaDocTokenType("SWAG_SPACE");
   IElementType TAG_NAME = new LuaDocTokenType("TAG_NAME");
   IElementType TAG_NAME_ALIAS = new LuaDocTokenType("alias");
@@ -109,6 +119,7 @@ public interface LuaDocTypes {
   IElementType TAG_NAME_SUPPRESS = new LuaDocTokenType("suppress");
   IElementType TAG_NAME_SWAGDES = new LuaDocTokenType("Description");
   IElementType TAG_NAME_SWAGPARAM = new LuaDocTokenType("Param");
+  IElementType TAG_NAME_SWAGRES = new LuaDocTokenType("Response");
   IElementType TAG_NAME_SWAGROUTER = new LuaDocTokenType("Router");
   IElementType TAG_NAME_SWAGSUMMARY = new LuaDocTokenType("Summary");
   IElementType TAG_NAME_SWAGTAGS = new LuaDocTokenType("Tags");
@@ -192,6 +203,9 @@ public interface LuaDocTypes {
       else if (type == TAG_GENERIC_LIST) {
         return new LuaDocTagGenericListImpl(node);
       }
+      else if (type == TAG_HTTP_STATUS) {
+        return new LuaDocTagHttpStatusImpl(node);
+      }
       else if (type == TAG_LAN) {
         return new LuaDocTagLanImpl(node);
       }
@@ -216,6 +230,15 @@ public interface LuaDocTypes {
       else if (type == TAG_SWAG_HTTPMETHOD) {
         return new LuaDocTagSwagHttpmethodImpl(node);
       }
+      else if (type == TAG_SWAG_LINE) {
+        return new LuaDocTagSwagLineImpl(node);
+      }
+      else if (type == TAG_SWAG_NOTE) {
+        return new LuaDocTagSwagNoteImpl(node);
+      }
+      else if (type == TAG_SWAG_OBJ) {
+        return new LuaDocTagSwagObjImpl(node);
+      }
       else if (type == TAG_SWAG_PARAMS) {
         return new LuaDocTagSwagParamsImpl(node);
       }
@@ -224,6 +247,12 @@ public interface LuaDocTypes {
       }
       else if (type == TAG_SWAG_QUERY_TYPE) {
         return new LuaDocTagSwagQueryTypeImpl(node);
+      }
+      else if (type == TAG_SWAG_RESPONSE) {
+        return new LuaDocTagSwagResponseImpl(node);
+      }
+      else if (type == TAG_SWAG_RES_KEY) {
+        return new LuaDocTagSwagResKeyImpl(node);
       }
       else if (type == TAG_SWAG_ROUTER) {
         return new LuaDocTagSwagRouterImpl(node);

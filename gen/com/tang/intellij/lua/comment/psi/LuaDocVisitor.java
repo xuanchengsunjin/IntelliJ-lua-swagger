@@ -115,6 +115,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTag(o);
   }
 
+  public void visitTagHttpStatus(@NotNull LuaDocTagHttpStatus o) {
+    visitTag(o);
+  }
+
   public void visitTagLan(@NotNull LuaDocTagLan o) {
     visitTag(o);
   }
@@ -147,6 +151,18 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTag(o);
   }
 
+  public void visitTagSwagLine(@NotNull LuaDocTagSwagLine o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagNote(@NotNull LuaDocTagSwagNote o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagObj(@NotNull LuaDocTagSwagObj o) {
+    visitTag(o);
+  }
+
   public void visitTagSwagParamType(@NotNull LuaDocTagSwagParamType o) {
     visitTag(o);
   }
@@ -156,6 +172,14 @@ public class LuaDocVisitor extends PsiElementVisitor {
   }
 
   public void visitTagSwagQueryType(@NotNull LuaDocTagSwagQueryType o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagResKey(@NotNull LuaDocTagSwagResKey o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagResponse(@NotNull LuaDocTagSwagResponse o) {
     visitTag(o);
   }
 

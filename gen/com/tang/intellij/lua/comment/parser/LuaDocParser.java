@@ -168,7 +168,8 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_params
   //     | tag_swag_router
   //     | tag_swag_des
-  //     | tag_swag_sign)
+  //     | tag_swag_sign
+  //     | tag_swag_response)
   static boolean doc_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -200,6 +201,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_router
   //     | tag_swag_des
   //     | tag_swag_sign
+  //     | tag_swag_response
   private static boolean doc_item_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item_1")) return false;
     boolean r;
@@ -223,6 +225,7 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = tag_swag_router(b, l + 1);
     if (!r) r = tag_swag_des(b, l + 1);
     if (!r) r = tag_swag_sign(b, l + 1);
+    if (!r) r = tag_swag_response(b, l + 1);
     return r;
   }
 
@@ -751,6 +754,18 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // SWAG_HTTPSTATUS
+  public static boolean tag_http_status(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_http_status")) return false;
+    if (!nextTokenIs(b, SWAG_HTTPSTATUS)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SWAG_HTTPSTATUS);
+    exit_section_(b, m, TAG_HTTP_STATUS, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // TAG_NAME_LANGUAGE lan_id comment_string?
   public static boolean tag_lan(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_lan")) return false;
@@ -927,6 +942,117 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // tag_swag_note|tag_swag_obj
+  public static boolean tag_swag_line(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_line")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_LINE, "<tag swag line>");
+    r = tag_swag_note(b, l + 1);
+    if (!r) r = tag_swag_obj(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ("\"") comment_string ("\"")
+  public static boolean tag_swag_note(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_note")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_NOTE, "<tag swag note>");
+    r = tag_swag_note_0(b, l + 1);
+    r = r && comment_string(b, l + 1);
+    r = r && tag_swag_note_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ("\"")
+  private static boolean tag_swag_note_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_note_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "\"");
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ("\"")
+  private static boolean tag_swag_note_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_note_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "\"");
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ("{")? SWAGRES_TYPE_OBJ? ("}")? SWAG_RES_KEY? ("{")? ty? ("}")?
+  public static boolean tag_swag_obj(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_OBJ, "<tag swag obj>");
+    r = tag_swag_obj_0(b, l + 1);
+    r = r && tag_swag_obj_1(b, l + 1);
+    r = r && tag_swag_obj_2(b, l + 1);
+    r = r && tag_swag_obj_3(b, l + 1);
+    r = r && tag_swag_obj_4(b, l + 1);
+    r = r && tag_swag_obj_5(b, l + 1);
+    r = r && tag_swag_obj_6(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ("{")?
+  private static boolean tag_swag_obj_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_0")) return false;
+    consumeToken(b, LCURLY);
+    return true;
+  }
+
+  // SWAGRES_TYPE_OBJ?
+  private static boolean tag_swag_obj_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_1")) return false;
+    consumeToken(b, SWAGRES_TYPE_OBJ);
+    return true;
+  }
+
+  // ("}")?
+  private static boolean tag_swag_obj_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_2")) return false;
+    consumeToken(b, RCURLY);
+    return true;
+  }
+
+  // SWAG_RES_KEY?
+  private static boolean tag_swag_obj_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_3")) return false;
+    consumeToken(b, SWAG_RES_KEY);
+    return true;
+  }
+
+  // ("{")?
+  private static boolean tag_swag_obj_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_4")) return false;
+    consumeToken(b, LCURLY);
+    return true;
+  }
+
+  // ty?
+  private static boolean tag_swag_obj_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_5")) return false;
+    ty(b, l + 1, -1);
+    return true;
+  }
+
+  // ("}")?
+  private static boolean tag_swag_obj_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_obj_6")) return false;
+    consumeToken(b, RCURLY);
+    return true;
+  }
+
+  /* ********************************************************** */
   // 'query' | 'header'
   public static boolean tag_swag_param_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_swag_param_type")) return false;
@@ -985,6 +1111,34 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SWAGPARAM_HEADER);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // SWAG_RES_KEY
+  public static boolean tag_swag_res_key(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_res_key")) return false;
+    if (!nextTokenIs(b, SWAG_RES_KEY)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SWAG_RES_KEY);
+    exit_section_(b, m, TAG_SWAG_RES_KEY, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_SWAGRES tag_http_status tag_swag_line comment_string
+  public static boolean tag_swag_response(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_response")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SWAGRES)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_RESPONSE, null);
+    r = consumeToken(b, TAG_NAME_SWAGRES);
+    p = r; // pin = 1
+    r = r && report_error_(b, tag_http_status(b, l + 1));
+    r = p && report_error_(b, tag_swag_line(b, l + 1)) && r;
+    r = p && comment_string(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

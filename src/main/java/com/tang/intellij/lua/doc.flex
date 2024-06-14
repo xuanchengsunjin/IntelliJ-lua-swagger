@@ -59,7 +59,11 @@ STRING=[^\r\n\t\f]*
 ID=[:jletter:] ([:jletterdigit:]|\.)*
 URL=[A-Za-z0-9_\?&/=]+
 HTTP_METHOD=\[[A-Z]+\]+
+SWAG_HTTPSTATUS=[1-5][0-9]{2}
+SWAG_RES_KEY=[A-Za-z0-9_]+:
 AT=@
+COMMA = "\""
+SWAG_NOTE =".*"
 //三个-以上
 DOC_DASHES = --+
 //Strings
@@ -91,6 +95,10 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 %state xSWAG_DES
 %state xSWAG_SIGN
 %state xSWAG_METHOD
+%state xSWAG_RESPONSE
+%state xSWAG_RESPONSE_TYPE
+%state xSWAG_RESPONSE_TY
+%state xSWAG_COMON_NOTE
 
 %%
 
@@ -102,7 +110,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     .                          { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
-<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN> {
+<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN, xSWAG_RESPONSE> {
     {EOL}                      { yybegin(YYINITIAL);return com.intellij.psi.TokenType.WHITE_SPACE;}
     {LINE_WS}+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
@@ -131,6 +139,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     "Router"                   { yybegin(xSWAG_ROUTER); return TAG_NAME_SWAGROUTER; }
     "Description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
     "Security"                 { yybegin(xSWAG_SIGN); return TAG_NAME_SIGN; }
+    "Response"                 { yybegin(xSWAG_RESPONSE);  return TAG_NAME_SWAGRES; }
     {ID}                       { yybegin(xCOMMENT_STRING); return TAG_NAME; }
     [^]                        { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -188,6 +197,30 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 
 <xSWAG_PARAMS> {
      {ID}                        { yybegin(xSWAG_QUERY_TYPE); return ID; }
+}
+
+<xSWAG_RESPONSE> {
+     {WHITE_SPACE}               { yybegin(xSWAG_RESPONSE); return com.intellij.psi.TokenType.WHITE_SPACE;}
+     {SWAG_HTTPSTATUS}           { yybegin(xSWAG_RESPONSE_TYPE); return SWAG_HTTPSTATUS; }
+}
+
+<xSWAG_RESPONSE_TYPE> {
+     {WHITE_SPACE}                  { yybegin(xSWAG_RESPONSE_TYPE); return com.intellij.psi.TokenType.WHITE_SPACE;}
+     "object"                       { yybegin(xSWAG_RESPONSE_TYPE); return SWAGRES_TYPE_OBJ;}
+     "{object}"                     { yybegin(xSWAG_RESPONSE_TYPE); return SWAGRES_TYPE_OBJ;}
+     {SWAG_RES_KEY}                 { yybegin(xSWAG_RESPONSE_TYPE); return SWAG_RES_KEY;}
+     "{"                            { yybegin(xSWAG_RESPONSE_TY);   return LCURLY;}
+     "\""                           { yybegin(xCOMMENT_STRING); return SWAG_NOTE;}
+}
+
+<xSWAG_COMON_NOTE> {
+     [^]                      { yybegin(xCOMMENT_STRING); return SWAG_NOTE;}
+}
+
+<xSWAG_RESPONSE_TY> {
+     {WHITE_SPACE}               { yybegin(xSWAG_RESPONSE_TY); return com.intellij.psi.TokenType.WHITE_SPACE;}
+     "{"                         { yybegin(xSWAG_RESPONSE_TY); return LCURLY;}
+     {ID}                        { beginType(); return ID; }
 }
 
 <xSWAG_QUERY_TYPE> {

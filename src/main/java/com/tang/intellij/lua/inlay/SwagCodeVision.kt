@@ -73,6 +73,7 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
                     executeCommandAndShowOutput(element.project, cmd, "生成Route代码")
                 }
             }
+//            factory.onHover(routerPresentationRet, null)
             val genSwaggerPresentationRet = factory.onClick(genSwaggerPresentation, MouseButton.Left ){ _, _ ->
                 var cmd = genCmd(element.project, element, "genSwag")
                 if (cmd != null) {

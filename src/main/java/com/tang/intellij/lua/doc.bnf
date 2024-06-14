@@ -36,6 +36,8 @@
   tokens = [
         ID="regexp:[A-Za-z0-9_]+"
         URL="regexp:[A-Za-z0-9_\\?&/=]+"
+        SWAG_HTTPSTATUS="regexp:[1-5][0-9]{2}"
+        SWAG_RES_KEY="regexp:[A-Za-z0-9_]+:"
         SWAGBOOL="regexp:(true|false)"
         SWAG_SPACE="regexp:[\s\r]+"
         AT = '@'
@@ -83,6 +85,7 @@
         TAG_NAME_SWAGPARAM = 'Param'
         TAG_NAME_SWAGROUTER = 'Router'
         TAG_NAME_SWAGDES = 'Description'
+        TAG_NAME_SWAGRES = 'Response'
         TAG_NAME_SIGN = 'Security'
         SWAGPARAM_QUERY = "query"
         SWAGPARAM_HEADER = "header"
@@ -92,7 +95,9 @@
         SWAGPARAM_TRUE = 'true'
         SWAGPARAM_FALSE = 'false'
         HTTP_METHOD_GET = '[GET]'
+        SWAG_NOTE ="regexp:.*"
         HTTP_METHOD_SWAG  = "regexp:\s*\[(GET)\[+"
+        SWAGRES_TYPE_OBJ = "object"
   ]
   implements("tag.*") = [
     "com.tang.intellij.lua.comment.psi.LuaDocTag"
@@ -122,7 +127,8 @@ private doc_item ::= '@' (tag_param
     | tag_swag_params
     | tag_swag_router
     | tag_swag_des
-    | tag_swag_sign)
+    | tag_swag_sign
+    | tag_swag_response)
 
 ty ::= union_ty | function_ty | table_ty | generic_ty | arr_ty | general_ty | par_ty | string_literal_ty {
     implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
@@ -211,6 +217,20 @@ tag_swag_params ::= TAG_NAME_SWAGPARAM swag_param_name tag_swag_query_type ("{")
     pin = 1
 }
 
+tag_swag_response ::= TAG_NAME_SWAGRES tag_http_status tag_swag_line comment_string {
+    pin = 1
+}
+
+tag_swag_line ::= tag_swag_note|tag_swag_obj
+
+tag_swag_obj ::= ("{")? SWAGRES_TYPE_OBJ? ("}")? SWAG_RES_KEY? ("{")? ty? ("}")?
+
+tag_swag_note ::= ("\"") comment_string ("\"")
+
+tag_swag_res_key ::= SWAG_RES_KEY
+
+tag_http_status ::= SWAG_HTTPSTATUS
+
 tag_swag_sign ::= TAG_NAME_SIGN swag_sign {
    pin = 1
 }
@@ -221,7 +241,6 @@ swag_param_name ::= ID
 swag_sign ::= ID
 
 tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER
-
 
 tag_swag_param_type ::=  'query' | 'header' {
     pin = 1
