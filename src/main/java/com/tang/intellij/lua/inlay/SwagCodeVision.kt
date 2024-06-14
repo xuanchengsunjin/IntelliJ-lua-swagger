@@ -40,6 +40,7 @@ import com.tang.intellij.lua.comment.psi.impl.LuaDocTagSwagRouterImpl
 import com.tang.intellij.lua.config.SwagConfigManager
 import com.tang.intellij.lua.lang.LuaFileType
 import io.ktor.utils.io.errors.*
+import java.awt.Color
 import javax.swing.JPanel
 
 class SwagCodeVision: InlayHintsProvider<NoSettings> {
@@ -87,7 +88,6 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
             sink.addInlineElement(element.textOffset, false, routerPresentationRet, true)
             sink.addInlineElement(element.textOffset, false, genSwaggerPresentationRet, true)
             sink.addInlineElement(element.textOffset, false, yapiPresentationRet, true)
-
             return true
         }
 
@@ -122,7 +122,7 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
                     val errorOutput = process.errorStream.bufferedReader().readText()
                     process.waitFor()
                     ApplicationManager.getApplication().invokeLater {
-                        showOutputInToolWindow( output + errorOutput, title, project)
+                        showOutputInToolWindow(output + errorOutput, title, project)
                     }
                 } catch (e: Exception) {
                     ApplicationManager.getApplication().invokeLater {
@@ -132,77 +132,47 @@ class SwagCodeVision: InlayHintsProvider<NoSettings> {
             }
         }
 
-        fun executeShellCommand(command: String, project: Project) {
-            val dialog = ShellOutputDialog(project)
-            dialog.show()
-
-            val process = Runtime.getRuntime().exec(command)
-            val reader = BufferedReader(InputStreamReader(process.inputStream))
-            val errorReader = BufferedReader(InputStreamReader(process.errorStream))
-
-            // 启动一个新的线程来读取标准输出流
-//            Thread {
-//                var line: String?
-//                while (reader.readLine().also { line = it } != null) {
-//                    println(line!!)
-//                    dialog.appendText(line!!)
-//                }
-//            }.start()
-            var line: String?
-            while (reader.readLine().also { line = it } != null) {
-                println(line!!)
-                dialog.appendText(line!!)
-            }
-
-            // 启动一个新的线程来读取错误输出流
-            Thread {
-                var line: String?
-                while (errorReader.readLine().also { line = it } != null) {
-                    println(line!!)
-                    dialog.appendText(line!!)
-                }
-            }.start()
-
-            process.waitFor()
-        }
-
 
         private fun showOutputInToolWindow(output: String, title: String, project:Project) {
-            println(output)
             val dialog = ShellOutputDialog(project)
-
-            dialog.appendText(output)
+            val colorizedText = parseAnsiColors(output)
+            colorizedText.forEach { (text, color) ->
+                dialog.appendColoredText(text + "\n", color)
+            }
             dialog.show()
-//            showInfoMessage( output, title)
         }
 
+        private fun parseAnsiColors(text: String): List<Pair<String, Color>> {
+            val colorizedText = mutableListOf<Pair<String, Color>>()
+            val ansiRegex = Regex("""\u001B\[[;0-9]*m""")
 
-        private fun openTerminalAndExecuteCommand(project: Project, command: String) {
-            ApplicationManager.getApplication().invokeLater {
-                try {
-                    val commandLine = GeneralCommandLine(command)
-                    var processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(commandLine);
-//                    val processHandler = OSProcessHandler(commandLine)
-                    ProcessTerminatedListener.attach(processHandler)
-                    processHandler.startNotify()
-                } catch (e: ExecutionException) {
-                    e.printStackTrace()
+            val lines = text.lines()
+            lines.forEach { line ->
+                var currentColor = Color.BLACK
+                var remainingLine = line
+
+                val matchResult = ansiRegex.find(line)
+                if (matchResult != null) {
+                    val match = matchResult.value
+                    currentColor = when (match) {
+                        "\u001B[31m" -> Color.RED
+                        "\u001B[32m" -> Color.GREEN
+                        "\u001B[33m" -> Color.YELLOW
+                        "\u001B[34m" -> Color.BLUE
+                        "\u001B[35m" -> Color.MAGENTA
+                        "\u001B[36m" -> Color.CYAN
+                        "\u001B[0m" -> Color.BLACK
+                        else -> currentColor
+                    }
+                    remainingLine = line.removePrefix(match)
                 }
+                colorizedText.add(remainingLine to currentColor)
             }
+            return colorizedText
         }
-
-        private fun executeCommand(command: String) {
-            ApplicationManager.getApplication().executeOnPooledThread {
-                try {
-                    println("command:" + command)
-                    Runtime.getRuntime().exec(command)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
     }
+
+
 
     override fun createSettings() = NoSettings()
 

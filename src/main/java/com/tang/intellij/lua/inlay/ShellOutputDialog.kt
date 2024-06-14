@@ -19,28 +19,41 @@ package com.tang.intellij.lua.inlay
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextArea
 import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Dimension
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.JTextPane
+import javax.swing.text.AttributeSet
+import javax.swing.text.SimpleAttributeSet
+import javax.swing.text.StyleConstants
+import javax.swing.text.StyledDocument
 
 class ShellOutputDialog(project: Project?) : DialogWrapper(project) {
-    private val textArea = JBTextArea(20, 100) // 设置初始大小
-    private val panel = JPanel()
+    private val textPane = JTextPane().apply {
+        isEditable = false
+    }
+
+    private val scrollPane = JBScrollPane(textPane).apply {
+        preferredSize = Dimension(800, 400)
+    }
+
+    private val panel = JPanel(BorderLayout()).apply {
+        add(scrollPane, BorderLayout.CENTER)
+    }
 
     init {
-        textArea.isEditable = false
-        textArea.background = JBTextArea().background
-        textArea.foreground = JBTextArea().foreground
-        textArea.font = JBTextArea().font
-        panel.add(JBScrollPane(textArea))
         init()
         title = "Shell Output"
     }
 
-    fun appendText(text: String) {
-        textArea.append("$text\n")
-        textArea.caretPosition = textArea.document.length
+    fun appendColoredText(text: String, color: Color) {
+        val doc: StyledDocument = textPane.styledDocument
+        val style: AttributeSet = SimpleAttributeSet().apply {
+            StyleConstants.setForeground(this, color)
+        }
+        doc.insertString(doc.length, text, style)
     }
 
     override fun createCenterPanel(): JComponent {
