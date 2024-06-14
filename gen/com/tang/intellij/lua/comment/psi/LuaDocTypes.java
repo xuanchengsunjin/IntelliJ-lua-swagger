@@ -41,6 +41,7 @@ public interface LuaDocTypes {
   IElementType TAG_SEE = LuaParserDefinitionKt.createDocType("TAG_SEE");
   IElementType TAG_SUPPRESS = LuaParserDefinitionKt.createDocType("TAG_SUPPRESS");
   IElementType TAG_SWAG_DES = LuaParserDefinitionKt.createDocType("TAG_SWAG_DES");
+  IElementType TAG_SWAG_HEADER = LuaParserDefinitionKt.createDocType("TAG_SWAG_HEADER");
   IElementType TAG_SWAG_HTTPMETHOD = LuaParserDefinitionKt.createDocType("TAG_SWAG_HTTPMETHOD");
   IElementType TAG_SWAG_LINE = LuaParserDefinitionKt.createDocType("TAG_SWAG_LINE");
   IElementType TAG_SWAG_NOTE = LuaParserDefinitionKt.createDocType("TAG_SWAG_NOTE");
@@ -105,6 +106,7 @@ public interface LuaDocTypes {
   IElementType TAG_NAME_ENUM = new LuaDocTokenType("enum");
   IElementType TAG_NAME_FIELD = new LuaDocTokenType("field");
   IElementType TAG_NAME_GENERIC = new LuaDocTokenType("generic");
+  IElementType TAG_NAME_HEADER = new LuaDocTokenType("Header");
   IElementType TAG_NAME_LANGUAGE = new LuaDocTokenType("language");
   IElementType TAG_NAME_MODULE = new LuaDocTokenType("module");
   IElementType TAG_NAME_NAME = new LuaDocTokenType("TAG_NAME_NAME");
@@ -226,6 +228,9 @@ public interface LuaDocTypes {
       }
       else if (type == TAG_SWAG_DES) {
         return new LuaDocTagSwagDesImpl(node);
+      }
+      else if (type == TAG_SWAG_HEADER) {
+        return new LuaDocTagSwagHeaderImpl(node);
       }
       else if (type == TAG_SWAG_HTTPMETHOD) {
         return new LuaDocTagSwagHttpmethodImpl(node);

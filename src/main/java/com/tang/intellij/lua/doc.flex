@@ -99,6 +99,9 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 %state xSWAG_RESPONSE_TYPE
 %state xSWAG_RESPONSE_TY
 %state xSWAG_COMON_NOTE
+%state xSWAG_HEADER
+%state xSWAG_HEADER_TYPE
+%state xSWAG_HEADER_TY
 
 %%
 
@@ -110,7 +113,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     .                          { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
-<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN, xSWAG_RESPONSE> {
+<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN, xSWAG_RESPONSE, xSWAG_HEADER> {
     {EOL}                      { yybegin(YYINITIAL);return com.intellij.psi.TokenType.WHITE_SPACE;}
     {LINE_WS}+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
@@ -140,6 +143,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     "Description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
     "Security"                 { yybegin(xSWAG_SIGN); return TAG_NAME_SIGN; }
     "Response"                 { yybegin(xSWAG_RESPONSE);  return TAG_NAME_SWAGRES; }
+    "Header"                   { yybegin(xSWAG_HEADER); return TAG_NAME_HEADER; }
     {ID}                       { yybegin(xCOMMENT_STRING); return TAG_NAME; }
     [^]                        { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -202,6 +206,22 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 <xSWAG_RESPONSE> {
      {WHITE_SPACE}               { yybegin(xSWAG_RESPONSE); return com.intellij.psi.TokenType.WHITE_SPACE;}
      {SWAG_HTTPSTATUS}           { yybegin(xSWAG_RESPONSE_TYPE); return SWAG_HTTPSTATUS; }
+}
+
+<xSWAG_HEADER> {
+    {WHITE_SPACE}               { yybegin(xSWAG_HEADER); return com.intellij.psi.TokenType.WHITE_SPACE;}
+    {SWAG_HTTPSTATUS}           { yybegin(xSWAG_HEADER_TYPE); return SWAG_HTTPSTATUS;}
+}
+
+<xSWAG_HEADER_TYPE> {
+    {WHITE_SPACE}               { yybegin(xSWAG_HEADER_TYPE); return com.intellij.psi.TokenType.WHITE_SPACE;}
+    "{"                         { yybegin(xSWAG_HEADER_TY);   return LCURLY;}
+    {ID}                        { beginType();   return ID;}
+}
+
+<xSWAG_HEADER_TY> {
+    {WHITE_SPACE}               { yybegin(xSWAG_HEADER_TYPE); return com.intellij.psi.TokenType.WHITE_SPACE;}
+    {ID}                        { beginType(); return ID; }
 }
 
 <xSWAG_RESPONSE_TYPE> {

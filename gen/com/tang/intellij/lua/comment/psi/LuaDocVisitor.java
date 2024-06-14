@@ -147,6 +147,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTag(o);
   }
 
+  public void visitTagSwagHeader(@NotNull LuaDocTagSwagHeader o) {
+    visitTag(o);
+  }
+
   public void visitTagSwagHttpmethod(@NotNull LuaDocTagSwagHttpmethod o) {
     visitTag(o);
   }

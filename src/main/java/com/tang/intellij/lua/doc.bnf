@@ -86,6 +86,7 @@
         TAG_NAME_SWAGROUTER = 'Router'
         TAG_NAME_SWAGDES = 'Description'
         TAG_NAME_SWAGRES = 'Response'
+        TAG_NAME_HEADER = 'Header'
         TAG_NAME_SIGN = 'Security'
         SWAGPARAM_QUERY = "query"
         SWAGPARAM_HEADER = "header"
@@ -128,7 +129,8 @@ private doc_item ::= '@' (tag_param
     | tag_swag_router
     | tag_swag_des
     | tag_swag_sign
-    | tag_swag_response)
+    | tag_swag_response
+    | tag_swag_header)
 
 ty ::= union_ty | function_ty | table_ty | generic_ty | arr_ty | general_ty | par_ty | string_literal_ty {
     implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
@@ -218,6 +220,10 @@ tag_swag_params ::= TAG_NAME_SWAGPARAM swag_param_name tag_swag_query_type ("{")
 }
 
 tag_swag_response ::= TAG_NAME_SWAGRES tag_http_status tag_swag_line comment_string {
+    pin = 1
+}
+
+tag_swag_header ::= TAG_NAME_HEADER tag_http_status ("{")? ty ("}")? comment_string {
     pin = 1
 }
 
