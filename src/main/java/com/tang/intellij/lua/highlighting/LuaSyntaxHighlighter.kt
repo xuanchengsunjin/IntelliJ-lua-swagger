@@ -98,6 +98,39 @@ class LuaSyntaxHighlighter : SyntaxHighlighterBase() {
             fillMap(ourMap1, LuaHighlightingData.REGION_HEADER, LuaRegionTypes.REGION_START)
             fillMap(ourMap1, LuaHighlightingData.REGION_DESC, LuaRegionTypes.REGION_DESC)
             fillMap(ourMap1, LuaHighlightingData.REGION_HEADER, LuaRegionTypes.REGION_END)
+
+            //swagger
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.URL)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAG_HTTPSTATUS)
+            fillMap(ourMap1, LuaHighlightingData.LOCAL_VAR, LuaDocTypes.HTTP_METHOD_SWAG)
+            fillMap(ourMap1, LuaHighlightingData.SELF, LuaDocTypes.TAG_NAME_SWAGPARAM)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.SWAGGER_PARAM_NME)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGGER_SIGN_NME)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAGRES)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAGROUTER)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_QUERY)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_PATH)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_FORM)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_HEADER)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_BODY)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_TRUE)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGPARAM_FALSE)
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.SWAGRES_TYPE_OBJ)
+
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAGTAGS)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAGSUMMARY)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SIGN)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAGDES)
+
+            fillMap(ourMap1, LuaHighlightingData.KEYWORD, LuaDocTypes.HTTPURL)
+            fillMap(ourMap1, LuaHighlightingData.LOCAL_VAR, LuaDocTypes.TAG_NAME_SERVER)
+
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_SIGN_API)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_SIGN_NAME)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_SIGN_IN)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_CONTACT_NAME)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_CONTACT_EMAIL)
+            fillMap(ourMap1, LuaHighlightingData.STRING, LuaDocTypes.TAG_NAME_SWAG_CONTACT_URL)
         }
 
         private fun fillMap(map: HashMap<IElementType, TextAttributesKey>, key: TextAttributesKey, types: Array<IElementType>) {

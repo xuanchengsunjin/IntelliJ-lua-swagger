@@ -94,6 +94,8 @@ public interface LuaDocTypes {
   IElementType STRING_BEGIN = new LuaDocTokenType("STRING_BEGIN");
   IElementType STRING_LITERAL = new LuaDocTokenType("STRING_LITERAL");
   IElementType SWAGBOOL = new LuaDocTokenType("SWAGBOOL");
+  IElementType SWAGGER_PARAM_NME = new LuaDocTokenType("SWAGGER_PARAM_NME");
+  IElementType SWAGGER_SIGN_NME = new LuaDocTokenType("SWAGGER_SIGN_NME");
   IElementType SWAGPARAM_BODY = new LuaDocTokenType("body");
   IElementType SWAGPARAM_FALSE = new LuaDocTokenType("false");
   IElementType SWAGPARAM_FORM = new LuaDocTokenType("formData");

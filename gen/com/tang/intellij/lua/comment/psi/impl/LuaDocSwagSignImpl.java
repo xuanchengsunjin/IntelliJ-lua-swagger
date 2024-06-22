@@ -29,8 +29,8 @@ public class LuaDocSwagSignImpl extends ASTWrapperPsiElement implements LuaDocSw
 
   @Override
   @NotNull
-  public PsiElement getId() {
-    return notNullChild(findChildByType(ID));
+  public PsiElement getSwaggerSignNme() {
+    return notNullChild(findChildByType(SWAGGER_SIGN_NME));
   }
 
 }

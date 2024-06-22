@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface LuaDocSwagSign extends LuaDocPsiElement {
 
   @NotNull
-  PsiElement getId();
+  PsiElement getSwaggerSignNme();
 
 }

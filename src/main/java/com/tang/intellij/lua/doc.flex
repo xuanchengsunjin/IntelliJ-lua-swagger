@@ -57,6 +57,7 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 STRING=[^\r\n\t\f]*
 ID=[:jletter:] ([:jletterdigit:]|\.)*
+SWAGGER_PARAM_NME=[:jletter:] ([:jletterdigit:]|\.)*
 URL=[A-Za-z0-9_\?&/=]+
 HTTPURL=http[s]?:\/\/[A-Za-z0-9_\-\\?\.:&/=]+
 HTTP_METHOD=\[[A-Z]+\]+
@@ -204,7 +205,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 }
 
 <xSWAG_SIGN> {
-    {ID}                     { yybegin(YYINITIAL); return ID; }
+    {ID}                     { yybegin(YYINITIAL); return SWAGGER_SIGN_NME; }
 }
 
 <xSWAG_SIGN_NAME> {
@@ -222,7 +223,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 }
 
 <xSWAG_PARAMS> {
-     {ID}                        { yybegin(xSWAG_QUERY_TYPE); return ID; }
+     {SWAGGER_PARAM_NME}                        { yybegin(xSWAG_QUERY_TYPE); return SWAGGER_PARAM_NME; }
 }
 
 <xSWAG_RESPONSE> {

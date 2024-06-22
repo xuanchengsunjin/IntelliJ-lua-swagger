@@ -534,25 +534,25 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ID
+  // SWAGGER_PARAM_NME
   public static boolean swag_param_name(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "swag_param_name")) return false;
-    if (!nextTokenIs(b, ID)) return false;
+    if (!nextTokenIs(b, SWAGGER_PARAM_NME)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ID);
+    r = consumeToken(b, SWAGGER_PARAM_NME);
     exit_section_(b, m, SWAG_PARAM_NAME, r);
     return r;
   }
 
   /* ********************************************************** */
-  // ID
+  // SWAGGER_SIGN_NME
   public static boolean swag_sign(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "swag_sign")) return false;
-    if (!nextTokenIs(b, ID)) return false;
+    if (!nextTokenIs(b, SWAGGER_SIGN_NME)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, ID);
+    r = consumeToken(b, SWAGGER_SIGN_NME);
     exit_section_(b, m, SWAG_SIGN, r);
     return r;
   }

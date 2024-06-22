@@ -29,8 +29,8 @@ public class LuaDocSwagParamNameImpl extends ASTWrapperPsiElement implements Lua
 
   @Override
   @NotNull
-  public PsiElement getId() {
-    return notNullChild(findChildByType(ID));
+  public PsiElement getSwaggerParamNme() {
+    return notNullChild(findChildByType(SWAGGER_PARAM_NME));
   }
 
 }

@@ -34,6 +34,8 @@
   extends(".*ty") = 'ty'
 
   tokens = [
+        SWAGGER_SIGN_NME="regexp:[A-Za-z0-9_]+"
+        SWAGGER_PARAM_NME="regexp:[A-Za-z0-9_]+"
         ID="regexp:[A-Za-z0-9_]+"
         URL="regexp:[A-Za-z0-9_\\?&/=]+"
         HTTPURL="regexp:http[s]?://[A-Za-z0-9_\-\\?&/=:\.]+"
@@ -264,8 +266,8 @@ tag_swag_sign ::= TAG_NAME_SIGN swag_sign {
 
 tag_swag_space ::= SWAG_SPACE
 
-swag_param_name ::= ID
-swag_sign ::= ID
+swag_param_name ::= SWAGGER_PARAM_NME
+swag_sign ::= SWAGGER_SIGN_NME
 
 tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER {
 //   methods = [getReference]
