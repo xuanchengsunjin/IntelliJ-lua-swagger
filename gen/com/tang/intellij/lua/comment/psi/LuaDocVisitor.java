@@ -143,6 +143,10 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTag(o);
   }
 
+  public void visitTagSwagContact(@NotNull LuaDocTagSwagContact o) {
+    visitTag(o);
+  }
+
   public void visitTagSwagDes(@NotNull LuaDocTagSwagDes o) {
     visitTag(o);
   }
@@ -191,7 +195,23 @@ public class LuaDocVisitor extends PsiElementVisitor {
     visitTag(o);
   }
 
+  public void visitTagSwagServer(@NotNull LuaDocTagSwagServer o) {
+    visitTag(o);
+  }
+
   public void visitTagSwagSign(@NotNull LuaDocTagSwagSign o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSignApi(@NotNull LuaDocTagSwagSignApi o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSignIn(@NotNull LuaDocTagSwagSignIn o) {
+    visitTag(o);
+  }
+
+  public void visitTagSwagSignName(@NotNull LuaDocTagSwagSignName o) {
     visitTag(o);
   }
 

@@ -58,6 +58,7 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 STRING=[^\r\n\t\f]*
 ID=[:jletter:] ([:jletterdigit:]|\.)*
 URL=[A-Za-z0-9_\?&/=]+
+HTTPURL=http[s]?:\/\/[A-Za-z0-9_\-\\?\.:&/=]+
 HTTP_METHOD=\[[A-Z]+\]+
 SWAG_HTTPSTATUS=[1-5][0-9]{2}
 SWAG_RES_KEY=[A-Za-z0-9_]+:
@@ -102,6 +103,9 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 %state xSWAG_HEADER
 %state xSWAG_HEADER_TYPE
 %state xSWAG_HEADER_TY
+%state xSWAG_SIGN_NAME
+%state xSWAG_QUERY_COMMY_TY
+%state xSWAG_SERVER
 
 %%
 
@@ -113,7 +117,7 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     .                          { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
-<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN, xSWAG_RESPONSE, xSWAG_HEADER> {
+<xTAG, xTAG_WITH_ID, xTAG_NAME, xPARAM, xTYPE_REF, xCLASS, xCLASS_EXTEND, xFIELD, xFIELD_ID, xCOMMENT_STRING, xGENERIC, xALIAS, xSUPPRESS, xSWAG_PARAMS, xSWAG_TAGS, xSWAG_SUMMARY, xSWAG_ROUTER, xSWAG_DES, xSWAG_SIGN, xSWAG_RESPONSE, xSWAG_HEADER, xSWAG_SIGN_NAME, xSWAG_QUERY_COMMY_TY, xSWAG_SERVER> {
     {EOL}                      { yybegin(YYINITIAL);return com.intellij.psi.TokenType.WHITE_SPACE;}
     {LINE_WS}+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
@@ -141,9 +145,17 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     "Summary"                  { yybegin(xSWAG_SUMMARY); return TAG_NAME_SWAGSUMMARY; }
     "Router"                   { yybegin(xSWAG_ROUTER); return TAG_NAME_SWAGROUTER; }
     "Description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
+    "description"              { yybegin(xSWAG_DES); return TAG_NAME_SWAGDES; }
     "Security"                 { yybegin(xSWAG_SIGN); return TAG_NAME_SIGN; }
+    "server"                   { yybegin(xSWAG_SERVER); return TAG_NAME_SERVER;}
+    "securityDefinitions.apikey"                 { yybegin(xSWAG_SIGN); return TAG_NAME_SWAG_SIGN_API; }
+    "name"                     { yybegin(xSWAG_SIGN_NAME); return TAG_NAME_SWAG_SIGN_NAME; }
+    "in"                       { yybegin(xSWAG_QUERY_COMMY_TY); return TAG_NAME_SWAG_SIGN_IN;}
     "Response"                 { yybegin(xSWAG_RESPONSE);  return TAG_NAME_SWAGRES; }
     "Header"                   { yybegin(xSWAG_HEADER); return TAG_NAME_HEADER; }
+    "contact.name"             { yybegin(xCOMMENT_STRING); return TAG_NAME_SWAG_CONTACT_NAME; }
+    "contact.email"             { yybegin(xCOMMENT_STRING); return TAG_NAME_SWAG_CONTACT_EMAIL; }
+    "contact.url"             { yybegin(xCOMMENT_STRING); return TAG_NAME_SWAG_CONTACT_URL; }
     {ID}                       { yybegin(xCOMMENT_STRING); return TAG_NAME; }
     [^]                        { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
@@ -174,6 +186,11 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
     [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
 
+<xSWAG_SERVER> {
+    {WHITE_SPACE}           { yybegin(xCOMMENT_STRING); return com.intellij.psi.TokenType.WHITE_SPACE;}
+    {HTTPURL}               {yybegin(xCOMMENT_STRING); return HTTPURL;}
+}
+
 <xSWAG_TAGS> {
     [^]                        { yybegin(xCOMMENT_STRING); yypushback(yylength()); }
 }
@@ -187,6 +204,11 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
 }
 
 <xSWAG_SIGN> {
+    {ID}                     { yybegin(YYINITIAL); return ID; }
+}
+
+<xSWAG_SIGN_NAME> {
+    {WHITE_SPACE}            { yybegin(xSWAG_SIGN_NAME); return com.intellij.psi.TokenType.WHITE_SPACE;}
     {ID}                     { yybegin(YYINITIAL); return ID; }
 }
 
@@ -250,6 +272,14 @@ SINGLE_QUOTED_STRING='([^\\\']|\\\S|\\[\r\n])*'?    //'([^\\'\r\n]|\\[^\r\n])*'?
      "body"                         { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_BODY; }
      "formData"                     { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_FORM; }
      "path"                         { yybegin(xSWAG_QUERY_TY); return SWAGPARAM_PATH; }
+}
+
+<xSWAG_QUERY_COMMY_TY> {
+    "query"                        { return SWAGPARAM_QUERY; }
+    "header"                       { return SWAGPARAM_HEADER; }
+    "body"                         { return SWAGPARAM_BODY; }
+    "formData"                     { return SWAGPARAM_FORM; }
+    "path"                         { return SWAGPARAM_PATH; }
 }
 
 <xSWAG_QUERY_TY> {

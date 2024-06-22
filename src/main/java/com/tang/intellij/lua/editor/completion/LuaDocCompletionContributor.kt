@@ -26,6 +26,7 @@ import com.intellij.util.Processor
 import com.tang.intellij.lua.comment.LuaCommentUtil
 import com.tang.intellij.lua.comment.psi.*
 import com.tang.intellij.lua.comment.psi.api.LuaComment
+import com.tang.intellij.lua.config.SwagConfigManager
 import com.tang.intellij.lua.lang.LuaIcons
 import com.tang.intellij.lua.lang.LuaParserDefinition
 import com.tang.intellij.lua.psi.LuaClassField
@@ -48,6 +49,9 @@ class LuaDocCompletionContributor : CompletionContributor() {
                 }
                 ADDITIONAL_TAGS.forEach { tagName ->
                     completionResultSet.addElement(LookupElementBuilder.create(tagName).withIcon(LuaIcons.ANNOTATION))
+                }
+                Swag_TAGS.forEach { tagName ->
+                    completionResultSet.addElement(LookupElementBuilder.create(tagName).withIcon(LuaIcons.API))
                 }
                 completionResultSet.stopHere()
             }
@@ -184,5 +188,7 @@ class LuaDocCompletionContributor : CompletionContributor() {
         private val SHOW_LAN = psiElement(LuaDocTypes.ID).inside(LuaDocTagLan::class.java)
 
         private val ADDITIONAL_TAGS = arrayOf("deprecated", "author", "version", "since")
+
+        private val Swag_TAGS = arrayOf("Router")
     }
 }

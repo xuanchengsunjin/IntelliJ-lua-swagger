@@ -45,6 +45,11 @@ fun getReference(paramNameRef: LuaDocParamNameRef): PsiReference {
     return LuaDocParamNameReference(paramNameRef)
 }
 
+
+//fun getReference(paramNameRef: LuaDocTagSwagQueryType): PsiReference {
+//    return LuaDocParamNameReference(paramNameRef)
+//}
+
 fun getReference(docClassNameRef: LuaDocClassNameRef): PsiReference {
     return LuaClassNameReference(docClassNameRef)
 }

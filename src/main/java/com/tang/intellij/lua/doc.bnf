@@ -36,6 +36,7 @@
   tokens = [
         ID="regexp:[A-Za-z0-9_]+"
         URL="regexp:[A-Za-z0-9_\\?&/=]+"
+        HTTPURL="regexp:http[s]?://[A-Za-z0-9_\-\\?&/=:\.]+"
         SWAG_HTTPSTATUS="regexp:[1-5][0-9]{2}"
         SWAG_RES_KEY="regexp:[A-Za-z0-9_]+:"
         SWAGBOOL="regexp:(true|false)"
@@ -88,6 +89,13 @@
         TAG_NAME_SWAGRES = 'Response'
         TAG_NAME_HEADER = 'Header'
         TAG_NAME_SIGN = 'Security'
+        TAG_NAME_SERVER = 'server'
+        TAG_NAME_SWAG_SIGN_API = 'securityDefinitions.apikey'
+        TAG_NAME_SWAG_SIGN_NAME = 'name'
+        TAG_NAME_SWAG_SIGN_IN = 'in'
+        TAG_NAME_SWAG_CONTACT_NAME = 'contact.name'
+        TAG_NAME_SWAG_CONTACT_EMAIL = 'contact.email'
+        TAG_NAME_SWAG_CONTACT_URL = 'contact.url'
         SWAGPARAM_QUERY = "query"
         SWAGPARAM_HEADER = "header"
         SWAGPARAM_FORM = "formData"
@@ -130,7 +138,12 @@ private doc_item ::= '@' (tag_param
     | tag_swag_des
     | tag_swag_sign
     | tag_swag_response
-    | tag_swag_header)
+    | tag_swag_header
+    | tag_swag_sign_api
+    | tag_swag_sign_name
+    | tag_swag_sign_in
+    | tag_swag_server
+    | tag_swag_contact)
 
 ty ::= union_ty | function_ty | table_ty | generic_ty | arr_ty | general_ty | par_ty | string_literal_ty {
     implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
@@ -209,7 +222,9 @@ union_ty ::= ty ('|' ty)+ {
 }
 access_modifier ::= PRIVATE | PUBLIC | PROTECTED | TAG_NAME_PRIVATE | TAG_NAME_PUBLIC | TAG_NAME_PROTECTED
 
+tag_swag_contact ::= TAG_NAME_SWAG_CONTACT_EMAIL | TAG_NAME_SWAG_CONTACT_NAME | TAG_NAME_SWAG_CONTACT_URL comment_string
 
+tag_swag_server ::= TAG_NAME_SERVER HTTPURL comment_string
 tag_swag_router ::= TAG_NAME_SWAGROUTER URL http_method
 tag_swag_httpmethod ::= '[' ID ']' {
     pin = 1
@@ -226,6 +241,12 @@ tag_swag_response ::= TAG_NAME_SWAGRES tag_http_status tag_swag_line comment_str
 tag_swag_header ::= TAG_NAME_HEADER tag_http_status ("{")? ty ("}")? comment_string {
     pin = 1
 }
+
+tag_swag_sign_api ::= TAG_NAME_SWAG_SIGN_API swag_sign
+
+tag_swag_sign_name ::= TAG_NAME_SWAG_SIGN_NAME swag_param_name
+
+tag_swag_sign_in ::= TAG_NAME_SWAG_SIGN_IN tag_swag_query_type
 
 tag_swag_line ::= tag_swag_note|tag_swag_obj
 
@@ -246,7 +267,10 @@ tag_swag_space ::= SWAG_SPACE
 swag_param_name ::= ID
 swag_sign ::= ID
 
-tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER
+tag_swag_query_type ::= SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER {
+//   methods = [getReference]
+//   implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
+}
 
 tag_swag_param_type ::=  'query' | 'header' {
     pin = 1

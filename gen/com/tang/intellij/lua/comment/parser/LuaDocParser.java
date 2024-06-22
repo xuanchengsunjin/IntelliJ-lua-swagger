@@ -170,7 +170,12 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_des
   //     | tag_swag_sign
   //     | tag_swag_response
-  //     | tag_swag_header)
+  //     | tag_swag_header
+  //     | tag_swag_sign_api
+  //     | tag_swag_sign_name
+  //     | tag_swag_sign_in
+  //     | tag_swag_server
+  //     | tag_swag_contact)
   static boolean doc_item(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item")) return false;
     if (!nextTokenIs(b, AT)) return false;
@@ -204,6 +209,11 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   //     | tag_swag_sign
   //     | tag_swag_response
   //     | tag_swag_header
+  //     | tag_swag_sign_api
+  //     | tag_swag_sign_name
+  //     | tag_swag_sign_in
+  //     | tag_swag_server
+  //     | tag_swag_contact
   private static boolean doc_item_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "doc_item_1")) return false;
     boolean r;
@@ -229,6 +239,11 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = tag_swag_sign(b, l + 1);
     if (!r) r = tag_swag_response(b, l + 1);
     if (!r) r = tag_swag_header(b, l + 1);
+    if (!r) r = tag_swag_sign_api(b, l + 1);
+    if (!r) r = tag_swag_sign_name(b, l + 1);
+    if (!r) r = tag_swag_sign_in(b, l + 1);
+    if (!r) r = tag_swag_server(b, l + 1);
+    if (!r) r = tag_swag_contact(b, l + 1);
     return r;
   }
 
@@ -917,6 +932,30 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // TAG_NAME_SWAG_CONTACT_EMAIL | TAG_NAME_SWAG_CONTACT_NAME | TAG_NAME_SWAG_CONTACT_URL comment_string
+  public static boolean tag_swag_contact(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_contact")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TAG_SWAG_CONTACT, "<tag swag contact>");
+    r = consumeToken(b, TAG_NAME_SWAG_CONTACT_EMAIL);
+    if (!r) r = consumeToken(b, TAG_NAME_SWAG_CONTACT_NAME);
+    if (!r) r = tag_swag_contact_2(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // TAG_NAME_SWAG_CONTACT_URL comment_string
+  private static boolean tag_swag_contact_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_contact_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TAG_NAME_SWAG_CONTACT_URL);
+    r = r && comment_string(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // TAG_NAME_SWAGDES comment_string
   public static boolean tag_swag_des(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_swag_des")) return false;
@@ -1134,7 +1173,10 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER
+  // SWAGPARAM_QUERY | SWAGPARAM_BODY | SWAGPARAM_FORM | SWAGPARAM_PATH | SWAGPARAM_HEADER {
+  // //   methods = [getReference]
+  // //   implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
+  // }
   public static boolean tag_swag_query_type(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_swag_query_type")) return false;
     boolean r;
@@ -1143,9 +1185,31 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SWAGPARAM_BODY);
     if (!r) r = consumeToken(b, SWAGPARAM_FORM);
     if (!r) r = consumeToken(b, SWAGPARAM_PATH);
-    if (!r) r = consumeToken(b, SWAGPARAM_HEADER);
+    if (!r) r = tag_swag_query_type_4(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  // SWAGPARAM_HEADER {
+  // //   methods = [getReference]
+  // //   implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
+  // }
+  private static boolean tag_swag_query_type_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_query_type_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, SWAGPARAM_HEADER);
+    r = r && tag_swag_query_type_4_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // {
+  // //   methods = [getReference]
+  // //   implements = ['com.tang.intellij.lua.comment.psi.LuaDocType']
+  // }
+  private static boolean tag_swag_query_type_4_1(PsiBuilder b, int l) {
+    return true;
   }
 
   /* ********************************************************** */
@@ -1190,6 +1254,19 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // TAG_NAME_SERVER HTTPURL comment_string
+  public static boolean tag_swag_server(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_server")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SERVER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, TAG_NAME_SERVER, HTTPURL);
+    r = r && comment_string(b, l + 1);
+    exit_section_(b, m, TAG_SWAG_SERVER, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // TAG_NAME_SIGN swag_sign
   public static boolean tag_swag_sign(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tag_swag_sign")) return false;
@@ -1201,6 +1278,45 @@ public class LuaDocParser implements PsiParser, LightPsiParser {
     r = r && swag_sign(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_SWAG_SIGN_API swag_sign
+  public static boolean tag_swag_sign_api(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_sign_api")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SWAG_SIGN_API)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TAG_NAME_SWAG_SIGN_API);
+    r = r && swag_sign(b, l + 1);
+    exit_section_(b, m, TAG_SWAG_SIGN_API, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_SWAG_SIGN_IN tag_swag_query_type
+  public static boolean tag_swag_sign_in(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_sign_in")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SWAG_SIGN_IN)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TAG_NAME_SWAG_SIGN_IN);
+    r = r && tag_swag_query_type(b, l + 1);
+    exit_section_(b, m, TAG_SWAG_SIGN_IN, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // TAG_NAME_SWAG_SIGN_NAME swag_param_name
+  public static boolean tag_swag_sign_name(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tag_swag_sign_name")) return false;
+    if (!nextTokenIs(b, TAG_NAME_SWAG_SIGN_NAME)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TAG_NAME_SWAG_SIGN_NAME);
+    r = r && swag_param_name(b, l + 1);
+    exit_section_(b, m, TAG_SWAG_SIGN_NAME, r);
+    return r;
   }
 
   /* ********************************************************** */
