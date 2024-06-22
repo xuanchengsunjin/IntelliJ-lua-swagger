@@ -19,7 +19,14 @@
     <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
          on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
-
+    <actions>
+        <action id="swag-main" class="com.tang.intellij.lua.actions.SwagMainGen" text="生成Swagger注释-Main" description="swagger.main.comment">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+        <action id="swag-gen" class="com.tang.intellij.lua.actions.SwagGen" text="生成Swagger注释-Router" description="swagger.router.comment">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
     <extensions defaultExtensionNs="com.intellij">
         <errorHandler implementation="com.tang.intellij.lua.errorreporting.GitHubErrorReporter"/>
 
