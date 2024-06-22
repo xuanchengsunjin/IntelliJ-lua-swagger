@@ -50,9 +50,18 @@ class LuaDocCompletionContributor : CompletionContributor() {
                 ADDITIONAL_TAGS.forEach { tagName ->
                     completionResultSet.addElement(LookupElementBuilder.create(tagName).withIcon(LuaIcons.ANNOTATION))
                 }
-                Swag_TAGS.forEach { tagName ->
+                SWAG_ROUTER_TAGS.forEach { tagName ->
                     completionResultSet.addElement(LookupElementBuilder.create(tagName).withIcon(LuaIcons.API))
                 }
+                SWAG_FIELD_TAGS.forEach { tagName ->
+                    completionResultSet.addElement(LookupElementBuilder.create(tagName).withIcon(LuaIcons.API))
+                }
+                completionResultSet.addElement(LookupElementBuilder.create("Security").withIcon(LuaIcons.API).withTypeText("设置API安全签名"))
+
+                completionResultSet.addElement(LookupElementBuilder.create("validate \"required,enums=mobile email,min=1,max=10,pattern=[\\d]+\"").withIcon(LuaIcons.API).withTypeText("设置字段：required,min,enums,max,正则"))
+                completionResultSet.addElement(LookupElementBuilder.create("validate \"required\"").withIcon(LuaIcons.API).withTypeText("设置字段是否必传"))
+                completionResultSet.addElement(LookupElementBuilder.create("validate \"required,pattern=[\\d]+\"").withIcon(LuaIcons.API).withTypeText("设置字段正则"))
+                completionResultSet.addElement(LookupElementBuilder.create("validate \"required,enums=mobile email\"").withIcon(LuaIcons.API).withTypeText("设置字段枚举"))
                 completionResultSet.stopHere()
             }
         })
@@ -189,6 +198,18 @@ class LuaDocCompletionContributor : CompletionContributor() {
 
         private val ADDITIONAL_TAGS = arrayOf("deprecated", "author", "version", "since")
 
-        private val Swag_TAGS = arrayOf("Router")
+        private val SWAG_ROUTER_TAGS = arrayOf(
+            "Router /api/login [GET]",
+            "Response  200    {object}   ret:{errcode}  \"错误码\"  [@validate:\"required,enums=0 101 105\"]",
+            "Param    token    query    string    true   \"登录token\"",
+            "Summary 接口名",
+            "Tags 接口所属标签目录",
+            "Description 接口备注",
+            "Header          406       {string}               ERROR-MSG       \"错误信息\"",
+        )
+
+        private val SWAG_FIELD_TAGS = arrayOf(
+            "example \"字段实例值\"",
+        )
     }
 }
